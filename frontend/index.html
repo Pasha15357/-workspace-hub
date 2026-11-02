@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkSpace Hub — Платформа бронирования</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>WorkSpace Hub</h1>
+
+        <!-- Навигация по вкладкам -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('spaces')">Каталог пространств</button>
+            <button class="tab-btn" onclick="switchTab('bookings')">Мои бронирования</button>
+            <button class="tab-btn" onclick="switchTab('admin')">Админ-панель</button>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+    <input type="text" id="search-input" placeholder="🔍 Поиск пространства по названию..." oninput="handleSearch()">
+</div>
+        <div id="tab-spaces" class="tab-content active">
+            <section class="card">
+                <h2>Доступные пространства</h2>
+                <div id="spaces-grid">Загрузка...</div>
+            </section>
+
+            <section class="card">
+                <h2>Забронировать рабочее место</h2>
+                <form id="booking-form">
+                    <select id="booking-space-select" required>
+                        <option value="">Выберите пространство...</option>
+                    </select>
+                    <input type="text" id="booking-user" placeholder="Ваше Имя или ID (например, Алексей)" required>
+                    <label>Начало:</label>
+                    <input type="datetime-local" id="booking-start" required>
+                    <label>Конец:</label>
+                    <input type="datetime-local" id="booking-end" required>
+                    <button type="submit" class="btn-primary">Подтвердить бронь</button>
+                </form>
+            </section>
+        </div>
+
+        <!-- Вкладка 2: Список бронирований -->
+        <div id="tab-bookings" class="tab-content">
+            <section class="card">
+                <h2>Все активные бронирования</h2>
+                <div id="bookings-list">Загрузка...</div>
+            </section>
+        </div>
+
+        <!-- Вкладка 3: Админка (Создание и удаление пространств) -->
+        <div id="tab-admin" class="tab-content">
+            <section class="card">
+                <h2>Добавить новое пространство</h2>
+                <form id="space-form">
+                    <input type="text" id="space-name" placeholder="Название (например, Open Space Alpha)" required>
+                    <input type="text" id="space-description" placeholder="Описание (например, Вид на парк, розетки у каждого стола)" required>
+                    <input type="number" id="space-price" placeholder="Цена за час ($)" step="0.01" required>
+                    <input type="number" id="space-capacity" placeholder="Вместимость (чел.)" required>
+                    <button type="submit" class="btn-success">Создать пространство</button>
+                </form>
+            </section>
+
+            <section class="card">
+                <h2>Управление пространствами</h2>
+                <div id="admin-spaces-list">Загрузка...</div>
+            </section>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
