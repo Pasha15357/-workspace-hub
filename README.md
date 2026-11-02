@@ -1,132 +1,80 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Информационная система управления коворкингом «WorkSpace Hub»
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## ГЛАВА 1. АНАЛИЗ ПРЕДМЕТНОЙ ОБЛАСТИ И ПОСТАНОВКА ЗАДАЧИ
 
-## Description
+### 1.1 Характеристика предметной области «WorkSpace Hub»
+Предметная область «WorkSpace Hub» охватывает процессы взаимодействия между резидентами коворкинг-центра (независимыми специалистами, командами, фрилансерами) и администрацией, управляющей номерным фондом рабочих пространств, переговорных комнат и индивидуальных офисов. Основная задача системы — предоставление прозрачного цифрового инструмента для выбора, аренды и администрирования ресурсов.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Субъектами и объектами информационной системы выступают:
+* **Клиент (Резидент / Арендатор)** — физическое или юридическое лицо, осуществляющее авторизацию в системе, поиск доступных пространств по заданным критериям, оформление бронирования и мониторинг активных заказов.
+* **Администратор коворкинга** — уполномоченный сотрудник, управляющий базой пространств (создание, редактирование, удаление), контролирующий загрузку номерного фонда и обеспечивающий техническую поддержку.
+* **Рабочее пространство (Объект аренды)** — цифровое представление физического ресурса, характеризующееся названием, описанием, стоимостью одного часа аренды, вместимостью и статусом активности.
 
-## Project setup
+### 1.2 Обзор существующих информационных систем-аналогов
+Для определения рыночного контекста и выявления функциональных преимуществ проектируемой ИС был проведен анализ существующих аналогов: международных платформ управления коворкингами (например, *Andcards*) и локальных систем бронирования переговорных. Анализ показал, что зарубежные аналоги перегружены избыточным корпоративным функционалом и имеют высокую стоимость подписки, а локальные решения часто не имеют встроенной защиты от двойного бронирования и строгой валидации на уровне бэкенда. Разрабатываемая система «WorkSpace Hub» призвана объединить легковесную архитектуру REST API, строгий контроль целостности данных и интуитивно понятный SPA-интерфейс.
 
-```bash
-$ npm install
-```
+### 1.3 Анализ бизнес-процессов бронирования коворкинга
+В рамках системного анализа выделены ключевые бизнес-процессы, подлежащие автоматизации: управление каталогом пространств (CRUD), динамический поиск по названию, оформление брони с проверкой временных интервалов и администрирование заказов.
 
-## Compile and run the project
+### 1.4 Модель «AS-IS» бизнес-процессов
+Текущий подход к бронированию мест в ряде коворкингов без ИС («AS-IS») опирается на телефонные звонки, бумажные журналы администраторов и ручное отслеживание занятости. Это приводит к человеческому фактору, накладкам по времени и потере клиентов. Внедрение «WorkSpace Hub» полностью переводит процессы в цифровую среду («TO-BE»).
 
-```bash
-# development
-$ npm run start
+### 1.5 Формулировка требований к разрабатываемой ИС
+В соответствии с ГОСТ 34.602-2020 сформулированы требования к системе: модульная структура бэкенда на NestJS, реляционная БД PostgreSQL с поддержкой ACID, мгновенный отклик UI при поиске пространств, обязательная валидация DTO и защита от пересечений броней.
 
-# watch mode
-$ npm run start:dev
+### 1.6 Дерево целей проекта
+Главная цель проекта — повышение эффективности управления коворкинг-пространствами и автоматизация бронирования. Декомпозиция включает подцели: автоматизацию каталога пространств, обеспечение безошибочного расчета стоимости, предотвращение коллизий расписания и создание удобного административного интерфейса.
 
-# production mode
-$ npm run start:prod
-```
+---
 
-## Run tests
+## ГЛАВА 2. ПРОЕКТИРОВАНИЕ ИНФОРМАЦИОННОЙ СИСТЕМЫ
 
-```bash
-# unit tests
-$ npm run test
+### 2.1 Выбор архитектурного стека и технологий
+Для реализации проекта выбран современный технологический стек, обеспечивающий высокую производительность, масштабируемость и безопасность:
+* **Бэкенд:** Фреймворк NestJS на базе TypeScript и Node.js. Архитектура основана на модулях (Modules), контроллерах (Controllers) и сервисах (Services), что гарантирует строгую инкапсуляцию бизнес-логики.
+* **База данных и ORM:** PostgreSQL (в контейнере Docker) в связке с TypeORM. Использование репозиторного паттерна позволяет декларативно описывать сущности и выполнять безопасные запросы.
+* **Валидация:** Библиотеки `class-validator` и `class-transformer` с глобальным пайплайном `ValidationPipe`.
+* **Фронтенд:** Нативный стековый подход (HTML5, CSS3, Vanilla JS) с организацией SPA на вкладках для обеспечения высокой скорости работы без тяжелых сборщиков.
 
-# e2e tests
-$ npm run test:e2e
+### 2.2 Разработка функциональной модели «TO-BE» (IDEF0)
+Функциональная модель описывает преобразование входящих запросов пользователей и администраторов в готовые записи баз данных и подтвержденные бронирования под управлением регламентов безопасности и дисконтирования.
 
-# test coverage
-$ npm run test:cov
-```
+### 2.3 Разработка UML-диаграмм (Use Case и Class)
+Объектно-ориентированное проектирование включает диаграмму вариантов использования (прецедентов) для ролей «Клиент» и «Администратор», а также диаграмму классов, отражающую сущности `Space` и `Booking` с их атрибутами, методами и связью «Один-ко-многим».
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## ГЛАВА 3. ИНТЕГРАЦИЯ БАЗЫ ДАННЫХ И ОБЕСПЕЧЕНИЕ БЕЗОПАСНОСТИ
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 3.1 Выбор и обоснование СУБД PostgreSQL
+В качестве СУБД выбрана PostgreSQL благодаря ее надежности, поддержке сложных реляционных связей, транзакционной целостности ACID и отличной совместимости с TypeORM в экосистеме Docker.
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+### 3.2 Инфологическая и даталогическая модели базы данных
+База данных состоит из двух основных таблиц: `spaces` (хранит параметры рабочих мест) и `bookings` (содержит внешние ключи, таймштампы и расчетную стоимость). Связь между ними организована через механизм ForeignKey с каскадным удалением.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 3.3 Реализация защиты от двойного бронирования и валидация DTO
+Критическим элементом бизнес-логики бэкенда является проверка пересечений времени. Метод создания брони в `BookingsService` осуществляет запрос с использованием операторов `LessThan` и `MoreThan`:
 
-## Observability
-
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
-
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
-
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
-
-To add it to this project, run this and approve the code it prints at [observe.nestjs.com/link](https://observe.nestjs.com/link) - signing up for free if you have no account:
-
-```bash
-$ npx @nestjs/observe link
-```
-
-It installs `@nestjs/observe`, wires it into `AppModule` and `main.ts`, and writes the app key and secret into `.env`, which every `nest start` script (`start`, `start:dev`, `start:debug`) then loads. In production, set `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` in the environment instead.
-
-Or do it by hand:
-
-```bash
-$ npm install @nestjs/observe
-```
-
-Then follow the [setup guide](https://docs.nestjs.com/observability/sdk) - it takes a single import and an app key.
-
-The free plan needs no payment details and covers 300,000 events a month. You can also browse the [live demo](https://www.observe-demo.nestjs.com/dashboard) first - the whole dashboard over a busy service's data, with nothing to install.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observe](https://observe.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```typescript
+const overlapping = await this.bookingRepository.findOne({
+  where: {
+    space: { id: spaceId },
+    startTime: LessThan(end),
+    endTime: MoreThan(start),
+  },
+});
+if (overlapping) throw new BadRequestException('Интервал уже забронирован');
+Это полностью исключает коллизии расписания на уровне сервера.
+3.4 Меры по обеспечению информационной безопасности и CORS
+Для обеспечения безопасности междоменного взаимодействия в файл main.ts интегрирован вызов app.enableCors(), разрешающий безопасные запросы из клиентской среды. Входные данные проходят строгую проверку через DTO-классы с декораторами.
+ЗАКЛЮЧЕНИЕ
+В ходе выполнения курсового проекта была успешно спроектирована и реализована информационная система «WorkSpace Hub», предназначенная для автоматизации бронирования коворкинг-пространств и управления номерным фондом.
+В процессе работы решены следующие задачи:
+•	проведен системный анализ предметной области, выявлены ключевые роли участников (клиент и администратор) и определены основные бизнес-процессы;
+•	выполнен обзор существующих аналогов и обоснована актуальность разработки специализированного легковесного решения с защитой от двойного бронирования;
+•	спроектирована модульная архитектура бэкенда на базе NestJS, TypeORM и PostgreSQL;
+•	реализован полный набор CRUD-операций для управления пространствами и бронированиями, а также динамический поиск по названию;
+•	настроена строгая валидация входящих запросов с помощью class-validator и обеспечена защита от коллизий временных интервалов.
+Разработанные модели, программные модули и проектная документация полностью соответствуют современным стандартам разработки и могут быть использованы в реальной практике коворкинг-центров или в качестве портфолио-проекта.
